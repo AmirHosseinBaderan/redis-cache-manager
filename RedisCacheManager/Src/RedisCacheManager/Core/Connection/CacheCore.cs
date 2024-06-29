@@ -8,7 +8,7 @@ internal class CacheCore : ICacheCore
     private ConnectionMultiplexer? _connection;
 
     public async Task<ConnectionMultiplexer?> ConnectAsync()
-        => await ConnectAsync(Configs.ConnectionString);
+        => await ConnectAsync(Configs.CacheConfigs.ConnectionString);
 
     public async Task<ConnectionMultiplexer?> ConnectAsync(string connectionString)
     {
