@@ -5,10 +5,9 @@ namespace RedisCacheManager.Configuration;
 
 public static class Configuration
 {
-    public static IServiceCollection AddRedisCacheManager(this IServiceCollection services, string connectionString)
+    public static IServiceCollection AddRedisCacheManager(this IServiceCollection services, Func<CacheConfigs> config)
     {
-        // Set connection string to configs
-        Configs.ConnectionString = connectionString;
+        Configs.CacheConfigs = config();
 
         // Add cache core services
         services.AddScoped<ICacheCore, CacheCore>();
