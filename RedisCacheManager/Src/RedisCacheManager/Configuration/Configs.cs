@@ -1,6 +1,8 @@
 ﻿namespace RedisCacheManager.Configuration;
 
+public record CacheConfigs(string ConnectionString, int Instance);
+
 internal class Configs
 {
-    public static string ConnectionString { get; set; }
+    public static CacheConfigs CacheConfigs { get; set; } = null!;
 }
