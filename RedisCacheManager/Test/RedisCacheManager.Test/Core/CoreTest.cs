@@ -1,12 +1,33 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.DependencyInjection;
+using RedisCacheManager.Configuration;
+using RedisCacheManager.Core;
 
 namespace RedisCacheManager.Test.Core;
 
 public class CoreTest
 {
-    [Test]
-    public void Connection()
+    private IServiceCollection _services;
+
+    [SetUp]
+    public void SetUp()
     {
-        var coreMock = Mock<ICacheCore>
+        _services = new ServiceCollection();
+        _services.AddRedisCacheManager(() => new("127.0.0.1:6379", 1));
+    }
+
+    [Test]
+    public async Task ConnectionWithDefaultConfig()
+    {
+        IServiceProvider provider = _services.BuildServiceProvider();
+        ICacheCore? core = provider.GetService<ICacheCore>();
+
+        if (core is null)
+            Assert.Fail("Cant inject services");
+
+        var connection = core?.ConnectAsync();
+        if (connection is null)
+            Assert.Fail("Faild to connect with redid db");
+        else
+            Assert.Pass("Connect to db");
     }
 }
