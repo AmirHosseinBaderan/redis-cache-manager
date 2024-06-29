@@ -15,5 +15,5 @@ public interface ICacheDb : IAsyncDisposable
     /// </summary>
     /// <param name="connectionString">Connection string for connect to redis</param>
     /// <returns>Instance of <see cref="IDatabaseAsync"/></returns>
-    Task<IDatabase?> GetDataBaseAsync(string connectionString);
+    Task<IDatabase?> GetDataBaseAsync(string connectionString, int instance);
 }

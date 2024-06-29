@@ -12,9 +12,9 @@ public class CacheDb(ICacheCore core) : ICacheDb
     }
 
     public async Task<IDatabase?> GetDataBaseAsync()
-        => await GetDataBaseAsync(Configs.CacheConfigs.ConnectionString);
+        => await GetDataBaseAsync(Configs.CacheConfigs.ConnectionString, Configs.CacheConfigs.Instance);
 
-    public async Task<IDatabase?> GetDataBaseAsync(string connectionString)
+    public async Task<IDatabase?> GetDataBaseAsync(string connectionString, int instance)
     {
         try
         {
@@ -22,7 +22,7 @@ public class CacheDb(ICacheCore core) : ICacheDb
             if (connection is null)
                 return null;
 
-            return connection.GetDatabase(Configs.CacheConfigs.Instance);
+            return connection.GetDatabase(instance);
         }
         catch
         {
