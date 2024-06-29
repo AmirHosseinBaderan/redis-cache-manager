@@ -2,7 +2,7 @@
 
 namespace RedisCacheManager.Core;
 
-internal interface ICacheDb : IAsyncDisposable
+public interface ICacheDb : IAsyncDisposable
 {
     /// <summary>
     /// Create connection and open data base using default configuration

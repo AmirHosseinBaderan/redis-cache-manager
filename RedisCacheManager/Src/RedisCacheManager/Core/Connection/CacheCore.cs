@@ -3,7 +3,7 @@ using StackExchange.Redis;
 
 namespace RedisCacheManager.Core;
 
-internal class CacheCore : ICacheCore
+public class CacheCore : ICacheCore
 {
     private ConnectionMultiplexer? _connection;
 

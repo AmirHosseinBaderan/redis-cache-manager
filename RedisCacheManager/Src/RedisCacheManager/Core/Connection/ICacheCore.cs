@@ -2,7 +2,7 @@
 
 namespace RedisCacheManager.Core;
 
-internal interface ICacheCore : IAsyncDisposable
+public interface ICacheCore : IAsyncDisposable
 {
     /// <summary>
     /// Create connection with redis server use default configuration

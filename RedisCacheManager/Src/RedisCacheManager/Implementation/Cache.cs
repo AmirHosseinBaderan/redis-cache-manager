@@ -6,7 +6,7 @@ using StackExchange.Redis;
 
 namespace RedisCacheManager.Implementation;
 
-internal class Cache(ICacheDb cacheDb) : ICache
+public class Cache(ICacheDb cacheDb) : ICache
 {
     public async ValueTask DisposeAsync()
     {

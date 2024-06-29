@@ -3,7 +3,7 @@ using StackExchange.Redis;
 
 namespace RedisCacheManager.Core;
 
-internal class CacheDb(ICacheCore core) : ICacheDb
+public class CacheDb(ICacheCore core) : ICacheDb
 {
     public async ValueTask DisposeAsync()
     {
