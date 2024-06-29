@@ -5,6 +5,12 @@ namespace RedisCacheManager.Core;
 
 internal class CacheDb(ICacheCore core) : ICacheDb
 {
+    public async ValueTask DisposeAsync()
+    {
+        GC.SuppressFinalize(this);
+        await core.DisposeAsync();
+    }
+
     public async Task<IDatabase?> GetDataBaseAsync()
         => await GetDataBaseAsync(Configs.CacheConfigs.ConnectionString);
 
