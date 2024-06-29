@@ -22,9 +22,31 @@ public class CoreTest
         ICacheCore? core = provider.GetService<ICacheCore>();
 
         if (core is null)
+        {
             Assert.Fail("Cant inject services");
+            return;
+        }
 
-        var connection = core?.ConnectAsync();
+        var connection = await core.ConnectAsync();
+        if (connection is null)
+            Assert.Fail("Faild to connect with redid db");
+        else
+            Assert.Pass("Connect to db");
+    }
+
+    [Test]
+    public async Task ConnectionWithCustomeConfig()
+    {
+        IServiceProvider provider = _services.BuildServiceProvider();
+        ICacheCore? core = provider.GetService<ICacheCore>();
+
+        if (core is null)
+        {
+            Assert.Fail("Cant inject services");
+            return;
+        }
+
+        var connection = await core.ConnectAsync("127.0.0.1:6379");
         if (connection is null)
             Assert.Fail("Faild to connect with redid db");
         else
