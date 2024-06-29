@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using RedisCacheManager.Abstraction;
 using RedisCacheManager.Core;
+using RedisCacheManager.Implementation;
 
 namespace RedisCacheManager.Configuration;
 
@@ -12,7 +14,9 @@ public static class Configuration
         // Add cache core services
         services.AddScoped<ICacheCore, CacheCore>();
 
+        services.AddScoped<ICacheDb, CacheDb>();
 
+        services.AddScoped<ICache, Cache>();
 
         return services;
     }
