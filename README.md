@@ -5,7 +5,7 @@ cache manager for any cache data base with redis client
 
 ### install package from nuget
 ``` cli
-dotnet add package  --version 1.0.0
+dotnet add package RedisCacheManager --version 1.0.0
 ```
 
 ### Add Redis Cache manager to your services 
