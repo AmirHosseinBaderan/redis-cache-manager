@@ -4,6 +4,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>RedisCacheManger</Title>
+    <Description>redis client using redis exchange for manage cache </Description>
+    <PackageProjectUrl>https://github.com/AmirHosseinBaderan/redis-cache-manager</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/AmirHosseinBaderan/redis-cache-manager</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
