@@ -1,23 +1,13 @@
 ﻿
 namespace RedisCacheManager.Implementation;
 
-public class Cache(ICacheDb cacheDb) : ICache
+public class Cache(ICacheDb cacheDb, ICacheBase cacheBase) : ICache
 {
-    public async ValueTask DisposeAsync()
-    {
-        GC.SuppressFinalize(this);
-        await cacheDb.DisposeAsync();
-    }
-
     public async Task<TModel?> GetItemAsync<TModel>(string key)
     {
         try
         {
-            IDatabase? db = await cacheDb.GetDataBaseAsync();
-            if (db is null)
-                return default;
-
-            RedisValue value = await db.StringGetAsync(key);
+            RedisValue value = await cacheBase.GetItemAsync(key);
             if (value.IsNullOrEmpty)
                 return default;
             return JsonConvert.DeserializeObject<TModel>(value.ToString());
@@ -28,25 +18,25 @@ public class Cache(ICacheDb cacheDb) : ICache
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<TModel> func)
+    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<Task<TModel>> func)
     {
         try
         {
-            IDatabase? db = await cacheDb.GetDataBaseAsync();
-            if (db is null)
-                return func();
-
-            RedisValue value = await db.StringGetAsync(key);
-            if (value.IsNullOrEmpty)
+            RedisValue value = await cacheBase.GetOrderSetItemAsync(key, async () =>
             {
-                var res = func();
-                return await SetItemAsync(key, res);
-            }
-            return JsonConvert.DeserializeObject<TModel>(value.ToString());
+                TModel? res = await func();
+                if (res is null)
+                    return RedisValue.Null;
+                string json = JsonConvert.SerializeObject(res);
+                return new(json);
+            });
+            return value.IsNullOrEmpty
+                ? await func()
+                : JsonConvert.DeserializeObject<TModel>(value.ToString());
         }
         catch
         {
-            return func();
+            return await func();
         }
     }
 
@@ -54,17 +44,17 @@ public class Cache(ICacheDb cacheDb) : ICache
     {
         try
         {
-            IDatabase? db = await cacheDb.GetDataBaseAsync();
-            if (db is null)
-                return await func();
-
-            RedisValue value = await db.StringGetAsync(key);
-            if (value.IsNullOrEmpty)
+            RedisValue value = await cacheBase.GetOrderSetItemAsync(key, cacheDuration, async () =>
             {
                 TModel? res = await func();
-                return await SetItemAsync(key, res, cacheDuration.ToTimeSpan());
-            }
-            return JsonConvert.DeserializeObject<TModel>(value.ToString());
+                if (res is null)
+                    return RedisValue.Null;
+                string json = JsonConvert.SerializeObject(res);
+                return new(json);
+            });
+            return value.IsNullOrEmpty
+                ? await func()
+                : JsonConvert.DeserializeObject<TModel>(value.ToString());
         }
         catch
         {
@@ -73,20 +63,7 @@ public class Cache(ICacheDb cacheDb) : ICache
     }
 
     public async Task RemoveItemAsync(string key)
-    {
-        try
-        {
-            IDatabase? db = await cacheDb.GetDataBaseAsync();
-            if (db is null)
-                return;
-
-            await db.StringGetDeleteAsync(key);
-        }
-        catch
-        {
-            return;
-        }
-    }
+        => await cacheBase.RemoveItemAsync(key);
 
     public async Task<TModel?> SetItemAsync<TModel>(string key, TModel? obj)
         => await SetItemAsync(key, obj, cacheTime: null);
@@ -98,12 +75,8 @@ public class Cache(ICacheDb cacheDb) : ICache
     {
         try
         {
-            IDatabase? db = await cacheDb.GetDataBaseAsync();
-            if (db is null)
-                return obj;
-
             string json = JsonConvert.SerializeObject(obj);
-            await db.StringSetAsync(key, new(json), cacheTime);
+            await cacheBase.SetItemAsync(key, new(json), cacheTime);
             return obj;
         }
         catch
