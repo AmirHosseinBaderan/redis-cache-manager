@@ -18,5 +18,5 @@ internal interface ICacheBase : IAsyncDisposable
 
     Task<RedisValue?> GetOrderSetItemAsync(string key, CacheDuration cacheDuration, Func<Task<RedisValue>> action);
 
-    Task<RedisValue?> SetItemAsync(string key, RedisValue obj, TimeSpan? cacheTime);
+    Task<RedisValue?> SetItemAsync(string key, RedisValue? obj, TimeSpan? cacheTime);
 }
