@@ -69,6 +69,50 @@ internal class CacheBase(ICacheDb cacheDb) : ICacheBase
         }
     }
 
+    public async Task<RedisValue> GetOrderSetItemAsync(string key, Func<RedisValue> action)
+    {
+        try
+        {
+            IDatabase? db = await cacheDb.GetDataBaseAsync();
+            if (db is null)
+                return action();
+
+            RedisValue value = await db.StringGetAsync(key);
+            if (value.IsNullOrEmpty)
+            {
+                var res = action();
+                return await SetItemAsync(key, res);
+            }
+            return value;
+        }
+        catch
+        {
+            return action();
+        }
+    }
+
+    public async Task<RedisValue> GetOrderSetItemAsync(string key, CacheDuration cacheDuration, Func<RedisValue> action)
+    {
+        try
+        {
+            IDatabase? db = await cacheDb.GetDataBaseAsync();
+            if (db is null)
+                return action();
+
+            RedisValue value = await db.StringGetAsync(key);
+            if (value.IsNullOrEmpty)
+            {
+                var res = action();
+                return await SetItemAsync(key, res, cacheDuration.ToTimeSpan());
+            }
+            return value;
+        }
+        catch
+        {
+            return action();
+        }
+    }
+
     public async Task RemoveItemAsync(string key)
     {
         try
