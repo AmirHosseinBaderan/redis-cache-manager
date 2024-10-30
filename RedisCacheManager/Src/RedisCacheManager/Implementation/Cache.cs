@@ -62,6 +62,50 @@ public class Cache(ICacheBase cacheBase) : ICache
         }
     }
 
+    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<TModel> action)
+    {
+        try
+        {
+            RedisValue value = await cacheBase.GetOrderSetItemAsync(key, () =>
+            {
+                TModel? res = action();
+                if (res is null)
+                    return RedisValue.Null;
+                string json = JsonConvert.SerializeObject(res);
+                return new(json);
+            });
+            return value.IsNullOrEmpty
+                ? action()
+                : JsonConvert.DeserializeObject<TModel>(value.ToString());
+        }
+        catch
+        {
+            return action();
+        }
+    }
+
+    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<TModel> action)
+    {
+        try
+        {
+            RedisValue value = await cacheBase.GetOrderSetItemAsync(key, cacheDuration, () =>
+            {
+                TModel? res = action();
+                if (res is null)
+                    return RedisValue.Null;
+                string json = JsonConvert.SerializeObject(res);
+                return new(json);
+            });
+            return value.IsNullOrEmpty
+                ? action()
+                : JsonConvert.DeserializeObject<TModel>(value.ToString());
+        }
+        catch
+        {
+            return action();
+        }
+    }
+
     public async Task RemoveItemAsync(string key)
         => await cacheBase.RemoveItemAsync(key);
 
