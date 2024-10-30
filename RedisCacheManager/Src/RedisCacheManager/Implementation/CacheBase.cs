@@ -88,9 +88,6 @@ internal class CacheBase(ICacheDb cacheDb) : ICacheBase
     public async Task<RedisValue> SetItemAsync(string key, RedisValue? obj)
         => await SetItemAsync(key, obj, cacheTime: null);
 
-    public async Task<RedisValue> SetItemAsync(string key, RedisValue? obj, CacheDuration duration)
-        => await SetItemAsync(key, obj, duration.ToTimeSpan());
-
     public async Task<RedisValue> SetItemAsync(string key, RedisValue? obj, TimeSpan? cacheTime)
     {
         try
@@ -107,14 +104,4 @@ internal class CacheBase(ICacheDb cacheDb) : ICacheBase
             return obj ?? RedisValue.Null;
         }
     }
-
-    public async Task<RedisValue> SetItemIfAsync(bool condition, string key, RedisValue? obj)
-          => condition ?
-          await SetItemAsync(key, obj, cacheTime: null)
-        : obj ?? RedisValue.Null;
-
-    public async Task<RedisValue> SetItemIfAsync(bool condition, string key, RedisValue? obj, CacheDuration duration)
-         => condition ?
-          await SetItemAsync(key, obj, cacheTime: duration.ToTimeSpan())
-        : obj ?? RedisValue.Null;
 }

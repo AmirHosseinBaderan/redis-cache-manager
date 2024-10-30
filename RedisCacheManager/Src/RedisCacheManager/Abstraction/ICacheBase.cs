@@ -6,12 +6,6 @@ public interface ICacheBase : IAsyncDisposable
 
     Task<RedisValue> SetItemAsync(string key, RedisValue? obj);
 
-    Task<RedisValue> SetItemAsync(string key, RedisValue? obj, CacheDuration duration);
-
-    Task<RedisValue> SetItemIfAsync(bool condition, string key, RedisValue? obj);
-
-    Task<RedisValue> SetItemIfAsync(bool condition, string key, RedisValue? obj, CacheDuration duration);
-
     Task RemoveItemAsync(string key);
 
     Task<RedisValue> GetOrderSetItemAsync(string key, Func<Task<RedisValue>> action);
