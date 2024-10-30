@@ -1,9 +1,6 @@
-﻿using Google.Protobuf;
-using RedisCacheManager.Configuration;
+﻿namespace RedisCacheManager.Abstraction;
 
-namespace RedisCacheManager.Abstraction;
-
-public interface IPortoCache : IAsyncDisposable
+public interface IPortoCache
 {
     Task<TModel?> GetItemAsync<TModel>(string key) where TModel : IMessage<TModel>, new();
 

@@ -1,22 +1,12 @@
 ﻿namespace RedisCacheManager.Implementation;
 
-public class PortoCache(ICacheDb cacheDb) : IPortoCache
+public class PortoCache(ICacheBase cacheBase) : IPortoCache
 {
-    public async ValueTask DisposeAsync()
-    {
-        GC.SuppressFinalize(this);
-        await cacheDb.DisposeAsync();
-    }
-
     public async Task<TModel?> GetItemAsync<TModel>(string key) where TModel : IMessage<TModel>, new()
     {
         try
         {
-            IDatabase? db = await cacheDb.GetDataBaseAsync();
-            if (db is null)
-                return default;
-
-            RedisValue value = await db.StringGetAsync(key);
+            RedisValue value = await cacheBase.GetItemAsync(key);
             return value.IsNullOrEmpty
                 ? default
                 : ((byte[])value!).Deserialize<TModel>();
@@ -31,17 +21,16 @@ public class PortoCache(ICacheDb cacheDb) : IPortoCache
     {
         try
         {
-            IDatabase? db = await cacheDb.GetDataBaseAsync();
-            if (db is null)
-                return await func();
-
-            RedisValue value = await db.StringGetAsync(key);
-            if (value.IsNullOrEmpty)
+            RedisValue value = await cacheBase.GetOrderSetItemAsync(key, async () =>
             {
-                var res = await func();
-                return await SetItemAsync(key, res);
-            }
-            return ((byte[])value!).Deserialize<TModel>();
+                TModel? res = await func();
+                return res is null
+                ? RedisValue.Null
+                : (RedisValue)res.Serialize();
+            });
+            return value.IsNullOrEmpty
+                ? await func()
+                : ((byte[])value!).Deserialize<TModel>();
         }
         catch
         {
@@ -53,17 +42,16 @@ public class PortoCache(ICacheDb cacheDb) : IPortoCache
     {
         try
         {
-            IDatabase? db = await cacheDb.GetDataBaseAsync();
-            if (db is null)
-                return await func();
-
-            RedisValue value = await db.StringGetAsync(key);
-            if (value.IsNullOrEmpty)
+            RedisValue value = await cacheBase.GetOrderSetItemAsync(key, cacheDuration, async () =>
             {
                 TModel? res = await func();
-                return await SetItemAsync(key, res, cacheDuration.ToTimeSpan());
-            }
-            return ((byte[])value!).Deserialize<TModel>();
+                return res is null
+                ? RedisValue.Null
+                : (RedisValue)res.Serialize();
+            });
+            return value.IsNullOrEmpty
+                ? await func()
+                : JsonConvert.DeserializeObject<TModel>(value.ToString());
         }
         catch
         {
@@ -72,20 +60,7 @@ public class PortoCache(ICacheDb cacheDb) : IPortoCache
     }
 
     public async Task RemoveItemAsync(string key)
-    {
-        try
-        {
-            IDatabase? db = await cacheDb.GetDataBaseAsync();
-            if (db is null)
-                return;
-
-            await db.StringGetDeleteAsync(key);
-        }
-        catch
-        {
-            return;
-        }
-    }
+        => await cacheBase.RemoveItemAsync(key);
 
     public async Task<TModel?> SetItemAsync<TModel>(string key, TModel? obj) where TModel : IMessage<TModel>
         => await SetItemAsync(key, obj, cacheTime: null);
@@ -97,12 +72,10 @@ public class PortoCache(ICacheDb cacheDb) : IPortoCache
     {
         try
         {
-            IDatabase? db = await cacheDb.GetDataBaseAsync();
-            if (db is null || obj is null)
+            if (obj is null)
                 return obj;
 
-            byte[] value = obj.Serialize();
-            await db.StringSetAsync(key, value, cacheTime);
+            await cacheBase.SetItemAsync(key, obj.Serialize(), cacheTime);
             return obj;
         }
         catch
