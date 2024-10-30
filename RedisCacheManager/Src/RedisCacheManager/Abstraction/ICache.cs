@@ -18,7 +18,7 @@ public interface ICache : IAsyncDisposable
 
     Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<TModel> action);
 
-    Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<TModel> action);
+    Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<Task<TModel>> action);
 
     Task<TModel?> SetItemAsync<TModel>(string key, TModel obj, TimeSpan? cacheTime);
 }

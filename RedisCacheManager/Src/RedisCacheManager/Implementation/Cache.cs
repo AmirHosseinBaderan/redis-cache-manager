@@ -55,25 +55,25 @@ public class Cache(ICacheDb cacheDb) : ICache
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<TModel> func)
+    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<Task<TModel>> func)
     {
         try
         {
             IDatabase? db = await cacheDb.GetDataBaseAsync();
             if (db is null)
-                return func();
+                return await func();
 
             RedisValue value = await db.StringGetAsync(key);
             if (value.IsNullOrEmpty)
             {
-                var res = func();
+                TModel? res = await func();
                 return await SetItemAsync(key, res, cacheDuration.ToTimeSpan());
             }
             return JsonConvert.DeserializeObject<TModel>(value.ToString());
         }
         catch
         {
-            return func();
+            return await func();
         }
     }
 
