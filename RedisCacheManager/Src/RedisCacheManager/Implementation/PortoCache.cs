@@ -1,11 +1,4 @@
-﻿using Google.Protobuf;
-using Newtonsoft.Json;
-using RedisCacheManager.Abstraction;
-using RedisCacheManager.Configuration;
-using RedisCacheManager.Core;
-using StackExchange.Redis;
-
-namespace RedisCacheManager.Implementation;
+﻿namespace RedisCacheManager.Implementation;
 
 public class PortoCache(ICacheDb cacheDb) : IPortoCache
 {
@@ -15,7 +8,7 @@ public class PortoCache(ICacheDb cacheDb) : IPortoCache
         await cacheDb.DisposeAsync();
     }
 
-    public async Task<TModel?> GetItemAsync<TModel>(string key) where TModel : IMessage<TModel>
+    public async Task<TModel?> GetItemAsync<TModel>(string key) where TModel : IMessage<TModel>, new()
     {
         try
         {
@@ -24,9 +17,9 @@ public class PortoCache(ICacheDb cacheDb) : IPortoCache
                 return default;
 
             RedisValue value = await db.StringGetAsync(key);
-            if (value.IsNullOrEmpty)
-                return default;
-            return JsonConvert.DeserializeObject<TModel>(value.ToString());
+            return value.IsNullOrEmpty
+                ? default
+                : ((byte[])value!).Deserialize<TModel>();
         }
         catch
         {
@@ -34,29 +27,29 @@ public class PortoCache(ICacheDb cacheDb) : IPortoCache
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<TModel> func) where TModel : IMessage<TModel>
+    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<Task<TModel>> func) where TModel : IMessage<TModel>, new()
     {
         try
         {
             IDatabase? db = await cacheDb.GetDataBaseAsync();
             if (db is null)
-                return func();
+                return await func();
 
             RedisValue value = await db.StringGetAsync(key);
             if (value.IsNullOrEmpty)
             {
-                var res = func();
+                var res = await func();
                 return await SetItemAsync(key, res);
             }
-            return JsonConvert.DeserializeObject<TModel>(value.ToString());
+            return ((byte[])value!).Deserialize<TModel>();
         }
         catch
         {
-            return func();
+            return await func();
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<Task<TModel>> func) where TModel : IMessage<TModel>
+    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<Task<TModel>> func) where TModel : IMessage<TModel>, new()
     {
         try
         {
@@ -70,7 +63,7 @@ public class PortoCache(ICacheDb cacheDb) : IPortoCache
                 TModel? res = await func();
                 return await SetItemAsync(key, res, cacheDuration.ToTimeSpan());
             }
-            return JsonConvert.DeserializeObject<TModel>(value.ToString());
+            return ((byte[])value!).Deserialize<TModel>();
         }
         catch
         {
@@ -105,11 +98,11 @@ public class PortoCache(ICacheDb cacheDb) : IPortoCache
         try
         {
             IDatabase? db = await cacheDb.GetDataBaseAsync();
-            if (db is null)
+            if (db is null || obj is null)
                 return obj;
 
-            string json = JsonConvert.SerializeObject(obj);
-            await db.StringSetAsync(key, new(json), cacheTime);
+            byte[] value = obj.Serialize();
+            await db.StringSetAsync(key, value, cacheTime);
             return obj;
         }
         catch
