@@ -10,7 +10,7 @@ internal class CacheBase(ICacheDb cacheDb) : ICacheBase
         await cacheDb.DisposeAsync();
     }
 
-    public async Task<RedisValue?> GetItemAsync(string key)
+    public async Task<RedisValue> GetItemAsync(string key)
     {
         try
         {
@@ -25,7 +25,7 @@ internal class CacheBase(ICacheDb cacheDb) : ICacheBase
         }
     }
 
-    public async Task<RedisValue?> GetOrderSetItemAsync(string key, Func<Task<RedisValue>> action)
+    public async Task<RedisValue> GetOrderSetItemAsync(string key, Func<Task<RedisValue>> action)
     {
         try
         {
@@ -47,7 +47,7 @@ internal class CacheBase(ICacheDb cacheDb) : ICacheBase
         }
     }
 
-    public async Task<RedisValue?> GetOrderSetItemAsync(string key, CacheDuration cacheDuration, Func<Task<RedisValue>> action)
+    public async Task<RedisValue> GetOrderSetItemAsync(string key, CacheDuration cacheDuration, Func<Task<RedisValue>> action)
     {
         try
         {
@@ -85,36 +85,36 @@ internal class CacheBase(ICacheDb cacheDb) : ICacheBase
         }
     }
 
-    public async Task<RedisValue?> SetItemAsync(string key, RedisValue? obj)
+    public async Task<RedisValue> SetItemAsync(string key, RedisValue? obj)
         => await SetItemAsync(key, obj, cacheTime: null);
 
-    public async Task<RedisValue?> SetItemAsync(string key, RedisValue? obj, CacheDuration duration)
+    public async Task<RedisValue> SetItemAsync(string key, RedisValue? obj, CacheDuration duration)
         => await SetItemAsync(key, obj, duration.ToTimeSpan());
 
-    public async Task<RedisValue?> SetItemAsync(string key, RedisValue? obj, TimeSpan? cacheTime)
+    public async Task<RedisValue> SetItemAsync(string key, RedisValue? obj, TimeSpan? cacheTime)
     {
         try
         {
             IDatabase? db = await cacheDb.GetDataBaseAsync();
             if (db is null || obj is null)
-                return obj;
+                return obj ?? RedisValue.Null;
 
             await db.StringSetAsync(key, (RedisValue)obj, cacheTime);
-            return obj;
+            return obj ?? RedisValue.Null;
         }
         catch
         {
-            return obj;
+            return obj ?? RedisValue.Null;
         }
     }
 
-    public async Task<RedisValue?> SetItemIfAsync(bool condition, string key, RedisValue? obj)
+    public async Task<RedisValue> SetItemIfAsync(bool condition, string key, RedisValue? obj)
           => condition ?
           await SetItemAsync(key, obj, cacheTime: null)
-        : obj;
+        : obj ?? RedisValue.Null;
 
-    public async Task<RedisValue?> SetItemIfAsync(bool condition, string key, RedisValue? obj, CacheDuration duration)
+    public async Task<RedisValue> SetItemIfAsync(bool condition, string key, RedisValue? obj, CacheDuration duration)
          => condition ?
           await SetItemAsync(key, obj, cacheTime: duration.ToTimeSpan())
-        : obj;
+        : obj ?? RedisValue.Null;
 }
