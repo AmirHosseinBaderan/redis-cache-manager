@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-
+﻿
 namespace RedisCacheManager.Implementation;
 
 public class Cache(ICacheDb cacheDb) : ICache
