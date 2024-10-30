@@ -1,8 +1,6 @@
-﻿using RedisCacheManager.Configuration;
+﻿namespace RedisCacheManager.Abstraction;
 
-namespace RedisCacheManager.Abstraction;
-
-public interface ICache : IAsyncDisposable
+public interface ICache
 {
     Task<TModel?> GetItemAsync<TModel>(string key);
 
