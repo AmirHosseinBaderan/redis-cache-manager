@@ -10,48 +10,111 @@ internal class CacheBase(ICacheDb cacheDb) : ICacheBase
         await cacheDb.DisposeAsync();
     }
 
-    public Task<RedisValue?> GetItemAsync(string key)
+    public async Task<RedisValue?> GetItemAsync(string key)
     {
-        throw new NotImplementedException();
+        try
+        {
+            IDatabase? db = await cacheDb.GetDataBaseAsync();
+            return db is null
+                ? RedisValue.Null
+                : await db.StringGetAsync(key);
+        }
+        catch
+        {
+            return RedisValue.Null;
+        }
     }
 
-    public Task<RedisValue?> GetOrderSetItemAsync(string key, Func<Task<RedisValue>> action)
+    public async Task<RedisValue?> GetOrderSetItemAsync(string key, Func<Task<RedisValue>> action)
     {
-        throw new NotImplementedException();
+        try
+        {
+            IDatabase? db = await cacheDb.GetDataBaseAsync();
+            if (db is null)
+                return await action();
+
+            RedisValue value = await db.StringGetAsync(key);
+            if (value.IsNullOrEmpty)
+            {
+                var res = await action();
+                return await SetItemAsync(key, res);
+            }
+            return value;
+        }
+        catch
+        {
+            return await action();
+        }
     }
 
-    public Task<RedisValue?> GetOrderSetItemAsync(string key, CacheDuration cacheDuration, Func<Task<RedisValue>> action)
+    public async Task<RedisValue?> GetOrderSetItemAsync(string key, CacheDuration cacheDuration, Func<Task<RedisValue>> action)
     {
-        throw new NotImplementedException();
+        try
+        {
+            IDatabase? db = await cacheDb.GetDataBaseAsync();
+            if (db is null)
+                return await action();
+
+            RedisValue value = await db.StringGetAsync(key);
+            if (value.IsNullOrEmpty)
+            {
+                var res = await action();
+                return await SetItemAsync(key, res, cacheDuration.ToTimeSpan());
+            }
+            return value;
+        }
+        catch
+        {
+            return await action();
+        }
     }
 
-    public Task RemoveItemAsync(string key)
+    public async Task RemoveItemAsync(string key)
     {
-        throw new NotImplementedException();
+        try
+        {
+            IDatabase? db = await cacheDb.GetDataBaseAsync();
+            if (db is null)
+                return;
+
+            await db.StringGetDeleteAsync(key);
+        }
+        catch
+        {
+            return;
+        }
     }
 
-    public Task<RedisValue?> SetItemAsync(string key, RedisValue? obj)
+    public async Task<RedisValue?> SetItemAsync(string key, RedisValue? obj)
+        => await SetItemAsync(key, obj, cacheTime: null);
+
+    public async Task<RedisValue?> SetItemAsync(string key, RedisValue? obj, CacheDuration duration)
+        => await SetItemAsync(key, obj, duration.ToTimeSpan());
+
+    public async Task<RedisValue?> SetItemAsync(string key, RedisValue? obj, TimeSpan? cacheTime)
     {
-        throw new NotImplementedException();
+        try
+        {
+            IDatabase? db = await cacheDb.GetDataBaseAsync();
+            if (db is null || obj is null)
+                return obj;
+
+            await db.StringSetAsync(key, (RedisValue)obj, cacheTime);
+            return obj;
+        }
+        catch
+        {
+            return obj;
+        }
     }
 
-    public Task<RedisValue?> SetItemAsync(string key, RedisValue? obj, CacheDuration duration)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<RedisValue?> SetItemIfAsync(bool condition, string key, RedisValue? obj)
+          => condition ?
+          await SetItemAsync(key, obj, cacheTime: null)
+        : obj;
 
-    public Task<RedisValue?> SetItemAsync(string key, RedisValue obj, TimeSpan? cacheTime)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<RedisValue?> SetItemIfAsync(bool condition, string key, RedisValue? obj)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<RedisValue?> SetItemIfAsync(bool condition, string key, RedisValue? obj, CacheDuration duration)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<RedisValue?> SetItemIfAsync(bool condition, string key, RedisValue? obj, CacheDuration duration)
+         => condition ?
+          await SetItemAsync(key, obj, cacheTime: duration.ToTimeSpan())
+        : obj;
 }
