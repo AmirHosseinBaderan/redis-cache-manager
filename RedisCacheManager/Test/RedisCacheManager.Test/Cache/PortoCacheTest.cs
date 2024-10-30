@@ -1,9 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using BenchmarkDotNet.Attributes;
+using Microsoft.Extensions.DependencyInjection;
 using RedisCacheManager.Abstraction;
 using RedisCacheManager.Configuration;
 
 namespace RedisCacheManager.Test.Cache;
 
+[TestFixture]
 public class PortoCacheTest
 {
     private IServiceCollection _services;
@@ -32,7 +34,7 @@ public class PortoCacheTest
         return provider.GetService<IPortoCache?>();
     }
 
-    [Test]
+    [Test, Benchmark()]
     public async Task SetCache()
     {
         var service = await GetService();
@@ -53,7 +55,7 @@ public class PortoCacheTest
         return;
     }
 
-    [Test]
+    [Test, Benchmark()]
     public async Task GetCache()
     {
         var service = await GetService();
@@ -77,7 +79,7 @@ public class PortoCacheTest
         return;
     }
 
-    [Test]
+    [Test, Benchmark()]
     public async Task GetOrSetCache()
     {
         var service = await GetService();

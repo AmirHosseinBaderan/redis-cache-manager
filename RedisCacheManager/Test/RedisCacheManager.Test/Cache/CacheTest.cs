@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using BenchmarkDotNet.Attributes;
+using Microsoft.Extensions.DependencyInjection;
 using RedisCacheManager.Abstraction;
 using RedisCacheManager.Configuration;
 
@@ -27,7 +28,7 @@ public class CacheTest
         return provider.GetService<ICache?>();
     }
 
-    [Test]
+    [Test, Benchmark()]
     public async Task SetCache()
     {
         var service = await GetService();
@@ -48,7 +49,7 @@ public class CacheTest
         return;
     }
 
-    [Test]
+    [Test, Benchmark()]
     public async Task GetCache()
     {
         var service = await GetService();
@@ -59,7 +60,10 @@ public class CacheTest
         }
 
         var result = await service.GetItemAsync<CacheModel>(_key);
-        if (result != _model)
+        if (result is CacheModel and
+            {
+                Id: "1", Name: "Amir", LastName: "Baderan",
+            })
         {
             Assert.Fail("Get item fail");
             return;
@@ -69,7 +73,7 @@ public class CacheTest
         return;
     }
 
-    [Test]
+    [Test, Benchmark()]
     public async Task GetOrSetCache()
     {
         var service = await GetService();
