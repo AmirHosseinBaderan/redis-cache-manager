@@ -1,7 +1,7 @@
 ﻿
 namespace RedisCacheManager.Implementation;
 
-public class Cache(ICacheDb cacheDb, ICacheBase cacheBase) : ICache
+public class Cache(ICacheBase cacheBase) : ICache
 {
     public async Task<TModel?> GetItemAsync<TModel>(string key)
     {
