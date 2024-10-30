@@ -14,7 +14,7 @@ public interface ICache
 
     Task RemoveItemAsync(string key);
 
-    Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<TModel> action);
+    Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<Task<TModel>> action);
 
     Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<Task<TModel>> action);
 
