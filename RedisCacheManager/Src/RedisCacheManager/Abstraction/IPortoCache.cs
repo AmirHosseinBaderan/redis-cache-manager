@@ -16,7 +16,11 @@ public interface IPortoCache
 
     Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<Task<TModel>> action) where TModel : IMessage<TModel>, new();
 
+    Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<TModel> action) where TModel : IMessage<TModel>, new();
+
     Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<Task<TModel>> action) where TModel : IMessage<TModel>, new();
+
+    Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<TModel> action) where TModel : IMessage<TModel>, new();
 
     Task<TModel?> SetItemAsync<TModel>(string key, TModel obj, TimeSpan? cacheTime) where TModel : IMessage<TModel>;
 }

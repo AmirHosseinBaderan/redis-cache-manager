@@ -59,6 +59,48 @@ public class PortoCache(ICacheBase cacheBase) : IPortoCache
         }
     }
 
+    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<TModel> action) where TModel : IMessage<TModel>, new()
+    {
+        try
+        {
+            RedisValue value = await cacheBase.GetOrderSetItemAsync(key, () =>
+            {
+                TModel? res = action();
+                return res is null
+                ? RedisValue.Null
+                : (RedisValue)res.Serialize();
+            });
+            return value.IsNullOrEmpty
+                ? action()
+                : ((byte[])value!).Deserialize<TModel>();
+        }
+        catch
+        {
+            return action();
+        }
+    }
+
+    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<TModel> action) where TModel : IMessage<TModel>, new()
+    {
+        try
+        {
+            RedisValue value = await cacheBase.GetOrderSetItemAsync(key, cacheDuration, () =>
+            {
+                TModel? res = action();
+                return res is null
+                ? RedisValue.Null
+                : (RedisValue)res.Serialize();
+            });
+            return value.IsNullOrEmpty
+                ? action()
+                : JsonConvert.DeserializeObject<TModel>(value.ToString());
+        }
+        catch
+        {
+            return action();
+        }
+    }
+
     public async Task RemoveItemAsync(string key)
         => await cacheBase.RemoveItemAsync(key);
 
