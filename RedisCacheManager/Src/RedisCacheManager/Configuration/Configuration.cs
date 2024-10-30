@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using RedisCacheManager.Abstraction;
-using RedisCacheManager.Core;
 using RedisCacheManager.Implementation;
 
 namespace RedisCacheManager.Configuration;
@@ -17,6 +15,7 @@ public static class Configuration
         services.AddScoped<ICacheDb, CacheDb>();
 
         services.AddScoped<ICache, Cache>();
+        services.AddScoped<IPortoCache, PortoCache>();
 
         return services;
     }
