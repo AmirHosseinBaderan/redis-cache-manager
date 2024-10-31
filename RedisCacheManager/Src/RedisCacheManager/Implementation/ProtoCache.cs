@@ -1,6 +1,6 @@
 ﻿namespace RedisCacheManager.Implementation;
 
-public class PortoCache(ICacheBase cacheBase) : IPortoCache
+public class ProtoCache(ICacheBase cacheBase) : IProtoCache
 {
     public async Task<TModel?> GetItemAsync<TModel>(string key) where TModel : IMessage<TModel>, new()
     {

@@ -1,6 +1,6 @@
 ﻿namespace RedisCacheManager.Abstraction;
 
-public interface IPortoCache
+public interface IProtoCache
 {
     Task<TModel?> GetItemAsync<TModel>(string key) where TModel : IMessage<TModel>, new();
 
