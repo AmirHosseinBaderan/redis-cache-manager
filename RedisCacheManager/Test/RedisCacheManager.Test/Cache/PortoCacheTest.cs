@@ -1,5 +1,4 @@
-﻿using BenchmarkDotNet.Attributes;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using RedisCacheManager.Abstraction;
 using RedisCacheManager.Configuration;
 
@@ -34,7 +33,7 @@ public class PortoCacheTest
         return provider.GetService<ICache<Person>?>();
     }
 
-    [Test, Benchmark()]
+    [Test, Order(1)]
     public async Task SetCache()
     {
         var service = await GetService();
@@ -55,31 +54,7 @@ public class PortoCacheTest
         return;
     }
 
-    [Test, Benchmark()]
-    public async Task GetCache()
-    {
-        var service = await GetService();
-        if (service is null)
-        {
-            Assert.Fail("Cant inject services");
-            return;
-        }
-
-        var result = await service.GetItemAsync(_key);
-        if (result is Person and
-            {
-                Id: 1, Email: "amirhossein@gmail.com", Name: "Amir hossein baderan",
-            })
-        {
-            Assert.Fail("Get item fail");
-            return;
-        }
-
-        Assert.Pass("Item Get successfuly");
-        return;
-    }
-
-    [Test, Benchmark()]
+    [Test, Order(2)]
     public async Task GetOrSetCache()
     {
         var service = await GetService();
@@ -106,6 +81,29 @@ public class PortoCacheTest
         }
 
         Assert.Pass("Item Get or set successfuly");
+        return;
+    }
+
+    [Test, Order(3)]
+    public async Task GetCache()
+    {
+        var service = await GetService();
+        if (service is null)
+        {
+            Assert.Fail("Cant inject services");
+            return;
+        }
+
+        var result = await service.GetItemAsync(_key);
+        if (result is Person and
+            {
+                Id: 1, Email: "amirhossein@gmail.com", Name: "Amir hossein baderan",
+            })
+        {
+            Assert.Pass("Item Get successfuly");
+            return;
+        }
+        Assert.Fail("Get item fail");
         return;
     }
 }

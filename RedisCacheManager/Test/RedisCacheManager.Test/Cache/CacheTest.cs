@@ -1,5 +1,4 @@
-﻿using BenchmarkDotNet.Attributes;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using RedisCacheManager.Abstraction;
 using RedisCacheManager.Configuration;
 
@@ -28,7 +27,7 @@ public class CacheTest
         return provider.GetService<ICache<CacheModel>?>();
     }
 
-    [Test, Benchmark()]
+    [Test, Order(1)]
     public async Task SetCache()
     {
         var service = await GetService();
@@ -49,31 +48,7 @@ public class CacheTest
         return;
     }
 
-    [Test, Benchmark()]
-    public async Task GetCache()
-    {
-        var service = await GetService();
-        if (service is null)
-        {
-            Assert.Fail("Cant inject services");
-            return;
-        }
-
-        var result = await service.GetItemAsync(_key);
-        if (result is CacheModel and
-            {
-                Id: "1", Name: "Amir", LastName: "Baderan",
-            })
-        {
-            Assert.Fail("Get item fail");
-            return;
-        }
-
-        Assert.Pass("Item Get successfuly");
-        return;
-    }
-
-    [Test, Benchmark()]
+    [Test, Order(2)]
     public async Task GetOrSetCache()
     {
         var service = await GetService();
@@ -95,6 +70,29 @@ public class CacheTest
         }
 
         Assert.Pass("Item Get or set successfuly");
+        return;
+    }
+
+    [Test, Order(3)]
+    public async Task GetCache()
+    {
+        var service = await GetService();
+        if (service is null)
+        {
+            Assert.Fail("Cant inject services");
+            return;
+        }
+
+        var result = await service.GetItemAsync(_key);
+        if (result is CacheModel and
+            {
+                Id: "1", Name: "Amir", LastName: "Baderan",
+            })
+        {
+            Assert.Pass("Item Get successfuly");
+            return;
+        }
+        Assert.Fail("Get item fail");
         return;
     }
 }
