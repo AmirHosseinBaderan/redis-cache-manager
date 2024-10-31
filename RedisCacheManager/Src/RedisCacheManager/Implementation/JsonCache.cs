@@ -1,8 +1,8 @@
 ﻿namespace RedisCacheManager.Implementation;
 
-internal class JsonCache(ICacheBase cacheBase) : IJsonCache
+internal class JsonCache<TModel>(ICacheBase cacheBase) : ICache<TModel>
 {
-    public async Task<TModel?> GetItemAsync<TModel>(string key)
+    public async Task<TModel?> GetItemAsync(string key)
     {
         try
         {
@@ -17,7 +17,7 @@ internal class JsonCache(ICacheBase cacheBase) : IJsonCache
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<Task<TModel>> func)
+    public async Task<TModel?> GetOrderSetItemAsync(string key, Func<Task<TModel>> func)
     {
         try
         {
@@ -39,7 +39,7 @@ internal class JsonCache(ICacheBase cacheBase) : IJsonCache
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<Task<TModel>> func)
+    public async Task<TModel?> GetOrderSetItemAsync(string key, CacheDuration cacheDuration, Func<Task<TModel>> func)
     {
         try
         {
@@ -61,7 +61,7 @@ internal class JsonCache(ICacheBase cacheBase) : IJsonCache
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<TModel> action)
+    public async Task<TModel?> GetOrderSetItemAsync(string key, Func<TModel> action)
     {
         try
         {
@@ -83,7 +83,7 @@ internal class JsonCache(ICacheBase cacheBase) : IJsonCache
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<TModel> action)
+    public async Task<TModel?> GetOrderSetItemAsync(string key, CacheDuration cacheDuration, Func<TModel> action)
     {
         try
         {
@@ -108,13 +108,13 @@ internal class JsonCache(ICacheBase cacheBase) : IJsonCache
     public async Task RemoveItemAsync(string key)
         => await cacheBase.RemoveItemAsync(key);
 
-    public async Task<TModel?> SetItemAsync<TModel>(string key, TModel? obj)
+    public async Task<TModel?> SetItemAsync(string key, TModel? obj)
         => await SetItemAsync(key, obj, cacheTime: null);
 
-    public async Task<TModel?> SetItemAsync<TModel>(string key, TModel? obj, CacheDuration duration)
+    public async Task<TModel?> SetItemAsync(string key, TModel? obj, CacheDuration duration)
         => await SetItemAsync(key, obj, duration.ToTimeSpan());
 
-    public async Task<TModel?> SetItemAsync<TModel>(string key, TModel obj, TimeSpan? cacheTime)
+    public async Task<TModel?> SetItemAsync(string key, TModel? obj, TimeSpan? cacheTime)
     {
         try
         {
@@ -128,12 +128,12 @@ internal class JsonCache(ICacheBase cacheBase) : IJsonCache
         }
     }
 
-    public async Task<TModel?> SetItemIfAsync<TModel>(bool condition, string key, TModel? obj)
+    public async Task<TModel?> SetItemIfAsync(bool condition, string key, TModel? obj)
         => condition ?
           await SetItemAsync(key, obj, cacheTime: null)
         : obj;
 
-    public async Task<TModel?> SetItemIfAsync<TModel>(bool condition, string key, TModel? obj, CacheDuration duration)
+    public async Task<TModel?> SetItemIfAsync(bool condition, string key, TModel? obj, CacheDuration duration)
         => condition ?
           await SetItemAsync(key, obj, cacheTime: duration.ToTimeSpan())
         : obj;
