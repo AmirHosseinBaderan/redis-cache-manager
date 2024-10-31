@@ -12,7 +12,7 @@ public class PortoCacheTest
 
     private Person _model;
 
-    private readonly string _key = "Cached-Item";
+    private readonly string _key = "Cached-Proto-Item";
 
     [SetUp]
     public void SetUp()

@@ -14,6 +14,7 @@ public static class Configuration
 
         services.AddScoped<ICacheDb, CacheDb>();
 
+        services.AddScoped<ICacheBase, CacheBase>();
         services.AddScoped<ICache, Cache>();
         services.AddScoped<IPortoCache, PortoCache>();
 
