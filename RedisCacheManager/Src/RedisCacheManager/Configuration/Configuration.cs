@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using RedisCacheManager.Core.Factory;
 using RedisCacheManager.Implementation;
 
 namespace RedisCacheManager.Configuration;
@@ -14,9 +15,23 @@ public static class Configuration
 
         services.AddScoped<ICacheDb, CacheDb>();
 
-        services.AddScoped<ICacheBase, CacheBase>();
-        services.AddScoped<ICache, Cache>();
-        services.AddScoped<IPortoCache, PortoCache>();
+        services.AddKeyedScoped(typeof(ICache<>), nameof(CacheType.Json), typeof(JsonCache<>));
+        services.AddKeyedScoped(typeof(ICache<>), nameof(CacheType.Proto), typeof(ProtoCache<>));
+
+        services.AddSingleton<ICacheFactory>(provider => new CacheFactory(Configs.CacheConfigs.Type, provider));
+
+        services.AddScoped(provider =>
+        {
+            var cacheFactory = provider.GetRequiredService<ICacheFactory>();
+
+            return Configs.CacheConfigs.Type switch
+            {
+                CacheType.Json => provider.GetRequiredKeyedService(typeof(ICache<>), nameof(CacheType.Json)),
+                CacheType.Proto => provider.GetRequiredKeyedService(typeof(ICache<>), nameof(CacheType.Proto)),
+                _ => provider.GetRequiredKeyedService(typeof(ICache<>), nameof(CacheType.Json)),
+            };
+        });
+
 
         return services;
     }
