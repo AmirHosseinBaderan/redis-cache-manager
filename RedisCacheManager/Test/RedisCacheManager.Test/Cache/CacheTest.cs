@@ -22,10 +22,10 @@ public class CacheTest
         _services.AddRedisCacheManager(() => new("127.0.0.1:6379", 1));
     }
 
-    public async Task<ICache?> GetService()
+    public async Task<ICache<CacheModel>?> GetService()
     {
         IServiceProvider provider = _services.BuildServiceProvider();
-        return provider.GetService<ICache?>();
+        return provider.GetService<ICache<CacheModel>?>();
     }
 
     [Test, Benchmark()]
@@ -59,7 +59,7 @@ public class CacheTest
             return;
         }
 
-        var result = await service.GetItemAsync<CacheModel>(_key);
+        var result = await service.GetItemAsync(_key);
         if (result is CacheModel and
             {
                 Id: "1", Name: "Amir", LastName: "Baderan",
