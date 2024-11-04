@@ -24,13 +24,13 @@ public class PortoCacheTest
         };
 
         _services = new ServiceCollection();
-        _services.AddRedisCacheManager(() => new("127.0.0.1:6379", 1, CacheType.Proto));
+        _services.AddRedisCacheManager(() => new("127.0.0.1:6379", 1));
     }
 
-    public async Task<ICache<Person>?> GetService()
+    public async Task<IProtoCache?> GetService()
     {
         IServiceProvider provider = _services.BuildServiceProvider();
-        return provider.GetService<ICache<Person>?>();
+        return provider.GetService<IProtoCache?>();
     }
 
     [Test, Order(1)]
@@ -64,7 +64,7 @@ public class PortoCacheTest
             return;
         }
 
-        var result = await service.GetOrderSetItemAsync(_key + "GetOrSet", async () =>
+        var result = await service.GetOrderSetItemAsync<Person>(_key + "GetOrSet", async () =>
         {
             Person model = new()
             {
@@ -94,7 +94,7 @@ public class PortoCacheTest
             return;
         }
 
-        var result = await service.GetItemAsync(_key);
+        var result = await service.GetItemAsync<Person>(_key);
         if (result is Person and
             {
                 Id: 1, Email: "amirhossein@gmail.com", Name: "Amir hossein baderan",

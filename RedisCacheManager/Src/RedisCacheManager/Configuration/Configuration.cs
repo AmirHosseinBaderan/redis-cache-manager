@@ -15,13 +15,8 @@ public static class Configuration
         services.AddScoped<ICacheDb, CacheDb>();
         services.AddScoped<ICacheBase, CacheBase>();
 
-        Type cahceImplementation = Configs.CacheConfigs.Type switch
-        {
-            CacheType.Json => typeof(JsonCache<>),
-            CacheType.Proto => typeof(ProtoCache<>),
-            _ => typeof(JsonCache<>),
-        };
-        services.AddScoped(typeof(ICache<>), cahceImplementation);
+        services.AddScoped<IJsonCache, JsonCache>();
+        services.AddScoped<IProtoCache, ProtoCache>();
 
         return services;
     }

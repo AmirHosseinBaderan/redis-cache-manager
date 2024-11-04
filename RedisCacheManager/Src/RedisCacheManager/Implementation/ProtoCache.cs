@@ -1,8 +1,8 @@
 ﻿namespace RedisCacheManager.Implementation;
 
-public class ProtoCache<TModel>(ICacheBase cacheBase) : ICache<TModel> where TModel : IMessage<TModel>, new()
+public class ProtoCache(ICacheBase cacheBase) : IProtoCache
 {
-    public async Task<TModel?> GetItemAsync(string key)
+    public async Task<TModel?> GetItemAsync<TModel>(string key) where TModel : IMessage<TModel>, new()
     {
         try
         {
@@ -17,7 +17,7 @@ public class ProtoCache<TModel>(ICacheBase cacheBase) : ICache<TModel> where TMo
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync(string key, Func<Task<TModel>> func)
+    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<Task<TModel>> func) where TModel : IMessage<TModel>, new()
     {
         try
         {
@@ -38,7 +38,7 @@ public class ProtoCache<TModel>(ICacheBase cacheBase) : ICache<TModel> where TMo
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync(string key, CacheDuration cacheDuration, Func<Task<TModel>> func)
+    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<Task<TModel>> func) where TModel : IMessage<TModel>, new()
     {
         try
         {
@@ -59,7 +59,7 @@ public class ProtoCache<TModel>(ICacheBase cacheBase) : ICache<TModel> where TMo
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync(string key, Func<TModel> action)
+    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<TModel> action) where TModel : IMessage<TModel>, new()
     {
         try
         {
@@ -80,7 +80,7 @@ public class ProtoCache<TModel>(ICacheBase cacheBase) : ICache<TModel> where TMo
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync(string key, CacheDuration cacheDuration, Func<TModel> action)
+    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<TModel> action) where TModel : IMessage<TModel>, new()
     {
         try
         {
@@ -104,13 +104,13 @@ public class ProtoCache<TModel>(ICacheBase cacheBase) : ICache<TModel> where TMo
     public async Task RemoveItemAsync(string key)
         => await cacheBase.RemoveItemAsync(key);
 
-    public async Task<TModel?> SetItemAsync(string key, TModel? obj)
+    public async Task<TModel?> SetItemAsync<TModel>(string key, TModel? obj) where TModel : IMessage<TModel>, new()
         => await SetItemAsync(key, obj, cacheTime: null);
 
-    public async Task<TModel?> SetItemAsync(string key, TModel? obj, CacheDuration duration)
+    public async Task<TModel?> SetItemAsync<TModel>(string key, TModel? obj, CacheDuration duration) where TModel : IMessage<TModel>, new()
         => await SetItemAsync(key, obj, duration.ToTimeSpan());
 
-    public async Task<TModel?> SetItemAsync(string key, TModel? obj, TimeSpan? cacheTime)
+    public async Task<TModel?> SetItemAsync<TModel>(string key, TModel? obj, TimeSpan? cacheTime) where TModel : IMessage<TModel>, new()
     {
         try
         {
@@ -126,12 +126,12 @@ public class ProtoCache<TModel>(ICacheBase cacheBase) : ICache<TModel> where TMo
         }
     }
 
-    public async Task<TModel?> SetItemIfAsync(bool condition, string key, TModel? obj)
+    public async Task<TModel?> SetItemIfAsync<TModel>(bool condition, string key, TModel? obj) where TModel : IMessage<TModel>, new()
         => condition ?
           await SetItemAsync(key, obj, cacheTime: null)
         : obj;
 
-    public async Task<TModel?> SetItemIfAsync(bool condition, string key, TModel? obj, CacheDuration duration)
+    public async Task<TModel?> SetItemIfAsync<TModel>(bool condition, string key, TModel? obj, CacheDuration duration) where TModel : IMessage<TModel>, new()
         => condition ?
           await SetItemAsync(key, obj, cacheTime: duration.ToTimeSpan())
         : obj;

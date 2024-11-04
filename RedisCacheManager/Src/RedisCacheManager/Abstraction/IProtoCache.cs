@@ -4,13 +4,13 @@ public interface IProtoCache
 {
     Task<TModel?> GetItemAsync<TModel>(string key) where TModel : IMessage<TModel>, new();
 
-    Task<TModel?> SetItemAsync<TModel>(string key, TModel? obj) where TModel : IMessage<TModel>;
+    Task<TModel?> SetItemAsync<TModel>(string key, TModel? obj) where TModel : IMessage<TModel>, new();
 
-    Task<TModel?> SetItemAsync<TModel>(string key, TModel? obj, CacheDuration duration) where TModel : IMessage<TModel>;
+    Task<TModel?> SetItemAsync<TModel>(string key, TModel? obj, CacheDuration duration) where TModel : IMessage<TModel>, new();
 
-    Task<TModel?> SetItemIfAsync<TModel>(bool condition, string key, TModel? obj) where TModel : IMessage<TModel>;
+    Task<TModel?> SetItemIfAsync<TModel>(bool condition, string key, TModel? obj) where TModel : IMessage<TModel>, new();
 
-    Task<TModel?> SetItemIfAsync<TModel>(bool condition, string key, TModel? obj, CacheDuration duration) where TModel : IMessage<TModel>;
+    Task<TModel?> SetItemIfAsync<TModel>(bool condition, string key, TModel? obj, CacheDuration duration) where TModel : IMessage<TModel>, new();
 
     Task RemoveItemAsync(string key);
 
@@ -22,5 +22,5 @@ public interface IProtoCache
 
     Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<TModel> action) where TModel : IMessage<TModel>, new();
 
-    Task<TModel?> SetItemAsync<TModel>(string key, TModel obj, TimeSpan? cacheTime) where TModel : IMessage<TModel>;
+    Task<TModel?> SetItemAsync<TModel>(string key, TModel obj, TimeSpan? cacheTime) where TModel : IMessage<TModel>, new();
 }
