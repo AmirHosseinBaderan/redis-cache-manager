@@ -1,9 +1,8 @@
-﻿using RedisCacheManager.Configuration;
-using StackExchange.Redis;
+﻿using Microsoft.Extensions.Logging;
 
 namespace RedisCacheManager.Core;
 
-public class CacheCore : ICacheCore
+public class CacheCore(ILogger<CacheCore> logger) : ICacheCore
 {
     private ConnectionMultiplexer? _connection;
 
@@ -18,10 +17,12 @@ public class CacheCore : ICacheCore
                 return _connection;
 
             _connection = await ConnectionMultiplexer.ConnectAsync(connectionString);
+            logger.LogInformation("Success connection with redis");
             return _connection;
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogError(ex, "Exception in redis connection");
             throw;
         }
     }

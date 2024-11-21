@@ -1,8 +1,10 @@
 ﻿
 
+using Microsoft.Extensions.Logging;
+
 namespace RedisCacheManager.Implementation;
 
-internal class CacheBase(ICacheDb cacheDb) : ICacheBase
+internal class CacheBase(ICacheDb cacheDb, ILogger<CacheBase> logger) : ICacheBase
 {
     public async ValueTask DisposeAsync()
     {
@@ -19,8 +21,9 @@ internal class CacheBase(ICacheDb cacheDb) : ICacheBase
                 ? RedisValue.Null
                 : await db.StringGetAsync(key);
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogError(ex, "Exception in GetItemAsync");
             return RedisValue.Null;
         }
     }
@@ -41,8 +44,9 @@ internal class CacheBase(ICacheDb cacheDb) : ICacheBase
             }
             return value;
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogError(ex, "Exception in GetOrderSetItemAsync");
             return await action();
         }
     }
@@ -63,8 +67,9 @@ internal class CacheBase(ICacheDb cacheDb) : ICacheBase
             }
             return value;
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogError(ex, "Exception in GetOrderSetItemAsync");
             return await action();
         }
     }
@@ -85,8 +90,9 @@ internal class CacheBase(ICacheDb cacheDb) : ICacheBase
             }
             return value;
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogError(ex, "Exception in GetOrderSetItemAsync");
             return action();
         }
     }
@@ -107,8 +113,9 @@ internal class CacheBase(ICacheDb cacheDb) : ICacheBase
             }
             return value;
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogError(ex, "Exception in GetOrderSetItemAsync");
             return action();
         }
     }
@@ -123,8 +130,9 @@ internal class CacheBase(ICacheDb cacheDb) : ICacheBase
 
             await db.StringGetDeleteAsync(key);
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogError(ex, "Exception in RemoveItemAsync");
             return;
         }
     }
@@ -143,8 +151,9 @@ internal class CacheBase(ICacheDb cacheDb) : ICacheBase
             await db.StringSetAsync(key, (RedisValue)obj, cacheTime);
             return obj ?? RedisValue.Null;
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogError(ex, "Exception in SetItemAsync");
             return obj ?? RedisValue.Null;
         }
     }
