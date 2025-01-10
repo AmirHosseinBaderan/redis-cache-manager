@@ -26,7 +26,7 @@ internal class JsonCache(ICacheBase cacheBase) : IJsonCache
                 TModel? res = await func();
                 if (res is null)
                     return RedisValue.Null;
-                string json = JsonConvert.SerializeObject(res);
+                string json = JsonConvert.SerializeObject(res, Configs.CacheConfigs.Formatting, Configs.CacheConfigs.JsonSerializerSettings);
                 return new(json);
             });
             return value.IsNullOrEmpty
@@ -48,7 +48,7 @@ internal class JsonCache(ICacheBase cacheBase) : IJsonCache
                 TModel? res = await func();
                 if (res is null)
                     return RedisValue.Null;
-                string json = JsonConvert.SerializeObject(res);
+                string json = JsonConvert.SerializeObject(res, Configs.CacheConfigs.Formatting, Configs.CacheConfigs.JsonSerializerSettings);
                 return new(json);
             });
             return value.IsNullOrEmpty
@@ -70,7 +70,7 @@ internal class JsonCache(ICacheBase cacheBase) : IJsonCache
                 TModel? res = action();
                 if (res is null)
                     return RedisValue.Null;
-                string json = JsonConvert.SerializeObject(res);
+                string json = JsonConvert.SerializeObject(res, Configs.CacheConfigs.Formatting, Configs.CacheConfigs.JsonSerializerSettings);
                 return new(json);
             });
             return value.IsNullOrEmpty
@@ -92,7 +92,7 @@ internal class JsonCache(ICacheBase cacheBase) : IJsonCache
                 TModel? res = action();
                 if (res is null)
                     return RedisValue.Null;
-                string json = JsonConvert.SerializeObject(res);
+                string json = JsonConvert.SerializeObject(res, Configs.CacheConfigs.Formatting, Configs.CacheConfigs.JsonSerializerSettings);
                 return new(json);
             });
             return value.IsNullOrEmpty
@@ -118,7 +118,7 @@ internal class JsonCache(ICacheBase cacheBase) : IJsonCache
     {
         try
         {
-            string json = JsonConvert.SerializeObject(obj);
+            string json = JsonConvert.SerializeObject(obj, Configs.CacheConfigs.Formatting, Configs.CacheConfigs.JsonSerializerSettings);
             await cacheBase.SetItemAsync(key, new(json), cacheTime);
             return obj;
         }

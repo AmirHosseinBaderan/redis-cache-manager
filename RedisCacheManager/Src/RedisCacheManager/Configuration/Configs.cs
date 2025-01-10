@@ -1,6 +1,6 @@
 ﻿namespace RedisCacheManager.Configuration;
 
-public record CacheConfigs(string ConnectionString, int Instance);
+public record CacheConfigs(string ConnectionString, int Instance, JsonSerializerSettings? JsonSerializerSettings, Formatting Formatting = Formatting.None);
 
 public class Configs
 {
