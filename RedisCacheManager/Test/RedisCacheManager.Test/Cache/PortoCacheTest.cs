@@ -24,7 +24,8 @@ public class PortoCacheTest
         };
 
         _services = new ServiceCollection();
-        _services.AddRedisCacheManager(() => new("127.0.0.1:6379", 1));
+        _services.AddLogging();
+        _services.AddRedisCacheManager(() => new("127.0.0.1:6379", 1, null));
     }
 
     public async Task<IProtoCache?> GetService()
