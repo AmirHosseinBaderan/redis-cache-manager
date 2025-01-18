@@ -58,7 +58,7 @@ public class CacheTest
             return;
         }
 
-        var result = await service.GetOrderSetItemAsync(_key + "GetOrSet", () =>
+        var result = await service.GetOrSetItemAsync(_key + "GetOrSet", () =>
         {
             CacheModel model = new("2", "Amir2", "Baderan2");
             return model;

@@ -14,13 +14,13 @@ public interface IJsonCache
 
     Task RemoveItemAsync(string key);
 
-    Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<Task<TModel>> action);
+    Task<TModel?> GetOrSetItemAsync<TModel>(string key, Func<Task<TModel>> action);
 
-    Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<TModel> action);
+    Task<TModel?> GetOrSetItemAsync<TModel>(string key, Func<TModel> action);
 
-    Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<Task<TModel>> action);
+    Task<TModel?> GetOrSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<Task<TModel>> action);
 
-    Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<TModel> action);
+    Task<TModel?> GetOrSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<TModel> action);
 
     Task<TModel?> SetItemAsync<TModel>(string key, TModel obj, TimeSpan? cacheTime);
 }

@@ -65,7 +65,7 @@ public class PortoCacheTest
             return;
         }
 
-        var result = await service.GetOrderSetItemAsync<Person>(_key + "GetOrSet", async () =>
+        var result = await service.GetOrSetItemAsync<Person>(_key + "GetOrSet", async () =>
         {
             Person model = new()
             {

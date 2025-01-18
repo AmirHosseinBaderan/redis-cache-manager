@@ -17,11 +17,11 @@ internal class JsonCache(ICacheBase cacheBase) : IJsonCache
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<Task<TModel>> func)
+    public async Task<TModel?> GetOrSetItemAsync<TModel>(string key, Func<Task<TModel>> func)
     {
         try
         {
-            RedisValue value = await cacheBase.GetOrderSetItemAsync(key, async () =>
+            RedisValue value = await cacheBase.GetOrSetItemAsync(key, async () =>
             {
                 TModel? res = await func();
                 if (res is null)
@@ -39,11 +39,11 @@ internal class JsonCache(ICacheBase cacheBase) : IJsonCache
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<Task<TModel>> func)
+    public async Task<TModel?> GetOrSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<Task<TModel>> func)
     {
         try
         {
-            RedisValue value = await cacheBase.GetOrderSetItemAsync(key, cacheDuration, async () =>
+            RedisValue value = await cacheBase.GetOrSetItemAsync(key, cacheDuration, async () =>
             {
                 TModel? res = await func();
                 if (res is null)
@@ -61,11 +61,11 @@ internal class JsonCache(ICacheBase cacheBase) : IJsonCache
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<TModel> action)
+    public async Task<TModel?> GetOrSetItemAsync<TModel>(string key, Func<TModel> action)
     {
         try
         {
-            RedisValue value = await cacheBase.GetOrderSetItemAsync(key, () =>
+            RedisValue value = await cacheBase.GetOrSetItemAsync(key, () =>
             {
                 TModel? res = action();
                 if (res is null)
@@ -83,11 +83,11 @@ internal class JsonCache(ICacheBase cacheBase) : IJsonCache
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<TModel> action)
+    public async Task<TModel?> GetOrSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<TModel> action)
     {
         try
         {
-            RedisValue value = await cacheBase.GetOrderSetItemAsync(key, cacheDuration, () =>
+            RedisValue value = await cacheBase.GetOrSetItemAsync(key, cacheDuration, () =>
             {
                 TModel? res = action();
                 if (res is null)

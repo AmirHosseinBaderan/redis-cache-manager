@@ -17,11 +17,11 @@ public class ProtoCache(ICacheBase cacheBase) : IProtoCache
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<Task<TModel>> func) where TModel : IMessage<TModel>, new()
+    public async Task<TModel?> GetOrSetItemAsync<TModel>(string key, Func<Task<TModel>> func) where TModel : IMessage<TModel>, new()
     {
         try
         {
-            RedisValue value = await cacheBase.GetOrderSetItemAsync(key, async () =>
+            RedisValue value = await cacheBase.GetOrSetItemAsync(key, async () =>
             {
                 TModel? res = await func();
                 return res is null
@@ -38,11 +38,11 @@ public class ProtoCache(ICacheBase cacheBase) : IProtoCache
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<Task<TModel>> func) where TModel : IMessage<TModel>, new()
+    public async Task<TModel?> GetOrSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<Task<TModel>> func) where TModel : IMessage<TModel>, new()
     {
         try
         {
-            RedisValue value = await cacheBase.GetOrderSetItemAsync(key, cacheDuration, async () =>
+            RedisValue value = await cacheBase.GetOrSetItemAsync(key, cacheDuration, async () =>
             {
                 TModel? res = await func();
                 return res is null
@@ -59,11 +59,11 @@ public class ProtoCache(ICacheBase cacheBase) : IProtoCache
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, Func<TModel> action) where TModel : IMessage<TModel>, new()
+    public async Task<TModel?> GetOrSetItemAsync<TModel>(string key, Func<TModel> action) where TModel : IMessage<TModel>, new()
     {
         try
         {
-            RedisValue value = await cacheBase.GetOrderSetItemAsync(key, () =>
+            RedisValue value = await cacheBase.GetOrSetItemAsync(key, () =>
             {
                 TModel? res = action();
                 return res is null
@@ -80,11 +80,11 @@ public class ProtoCache(ICacheBase cacheBase) : IProtoCache
         }
     }
 
-    public async Task<TModel?> GetOrderSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<TModel> action) where TModel : IMessage<TModel>, new()
+    public async Task<TModel?> GetOrSetItemAsync<TModel>(string key, CacheDuration cacheDuration, Func<TModel> action) where TModel : IMessage<TModel>, new()
     {
         try
         {
-            RedisValue value = await cacheBase.GetOrderSetItemAsync(key, cacheDuration, () =>
+            RedisValue value = await cacheBase.GetOrSetItemAsync(key, cacheDuration, () =>
             {
                 TModel? res = action();
                 return res is null

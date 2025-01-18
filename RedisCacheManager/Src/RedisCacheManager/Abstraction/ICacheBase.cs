@@ -8,13 +8,13 @@ public interface ICacheBase : IAsyncDisposable
 
     Task RemoveItemAsync(string key);
 
-    Task<RedisValue> GetOrderSetItemAsync(string key, Func<Task<RedisValue>> action);
+    Task<RedisValue> GetOrSetItemAsync(string key, Func<Task<RedisValue>> action);
 
-    Task<RedisValue> GetOrderSetItemAsync(string key, Func<RedisValue> action);
+    Task<RedisValue> GetOrSetItemAsync(string key, Func<RedisValue> action);
 
-    Task<RedisValue> GetOrderSetItemAsync(string key, CacheDuration cacheDuration, Func<Task<RedisValue>> action);
+    Task<RedisValue> GetOrSetItemAsync(string key, CacheDuration cacheDuration, Func<Task<RedisValue>> action);
 
-    Task<RedisValue> GetOrderSetItemAsync(string key, CacheDuration cacheDuration, Func<RedisValue> action);
+    Task<RedisValue> GetOrSetItemAsync(string key, CacheDuration cacheDuration, Func<RedisValue> action);
 
     Task<RedisValue> SetItemAsync(string key, RedisValue? obj, TimeSpan? cacheTime);
 }

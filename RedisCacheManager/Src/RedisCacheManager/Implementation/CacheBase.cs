@@ -28,7 +28,7 @@ internal class CacheBase(ICacheDb cacheDb, ILogger<CacheBase> logger) : ICacheBa
         }
     }
 
-    public async Task<RedisValue> GetOrderSetItemAsync(string key, Func<Task<RedisValue>> action)
+    public async Task<RedisValue> GetOrSetItemAsync(string key, Func<Task<RedisValue>> action)
     {
         try
         {
@@ -46,12 +46,12 @@ internal class CacheBase(ICacheDb cacheDb, ILogger<CacheBase> logger) : ICacheBa
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Exception in GetOrderSetItemAsync");
+            logger.LogError(ex, "Exception in GetOrSetItemAsync");
             return await action();
         }
     }
 
-    public async Task<RedisValue> GetOrderSetItemAsync(string key, CacheDuration cacheDuration, Func<Task<RedisValue>> action)
+    public async Task<RedisValue> GetOrSetItemAsync(string key, CacheDuration cacheDuration, Func<Task<RedisValue>> action)
     {
         try
         {
@@ -69,12 +69,12 @@ internal class CacheBase(ICacheDb cacheDb, ILogger<CacheBase> logger) : ICacheBa
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Exception in GetOrderSetItemAsync");
+            logger.LogError(ex, "Exception in GetOrSetItemAsync");
             return await action();
         }
     }
 
-    public async Task<RedisValue> GetOrderSetItemAsync(string key, Func<RedisValue> action)
+    public async Task<RedisValue> GetOrSetItemAsync(string key, Func<RedisValue> action)
     {
         try
         {
@@ -92,12 +92,12 @@ internal class CacheBase(ICacheDb cacheDb, ILogger<CacheBase> logger) : ICacheBa
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Exception in GetOrderSetItemAsync");
+            logger.LogError(ex, "Exception in GetOrSetItemAsync");
             return action();
         }
     }
 
-    public async Task<RedisValue> GetOrderSetItemAsync(string key, CacheDuration cacheDuration, Func<RedisValue> action)
+    public async Task<RedisValue> GetOrSetItemAsync(string key, CacheDuration cacheDuration, Func<RedisValue> action)
     {
         try
         {
@@ -115,7 +115,7 @@ internal class CacheBase(ICacheDb cacheDb, ILogger<CacheBase> logger) : ICacheBa
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Exception in GetOrderSetItemAsync");
+            logger.LogError(ex, "Exception in GetOrSetItemAsync");
             return action();
         }
     }
