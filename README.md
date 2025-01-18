@@ -5,7 +5,7 @@ cache manager for any cache data base with redis client
 
 ### install package from nuget
 ``` cli
-dotnet add package RedisCacheManager --version 1.0.0
+dotnet add package RedisCacheManager --version 1.6.0
 ```
 
 ### Add Redis Cache manager to your services 
@@ -27,7 +27,7 @@ public class Product(ICache cache,IProductRepository productRepository) : IProdu
     public async Task<Product> FindByIdAsync(Guid id)
     {
         string key = $"find-product-{id}";
-        var product = await cache.GetOrderSetItemAsync(id,async()=> await productRepository.FindById(id));
+        var product = await cache.GetOrSetItemAsync(id,async()=> await productRepository.FindById(id));
         return product;
     }
 
