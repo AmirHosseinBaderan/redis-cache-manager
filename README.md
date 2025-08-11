@@ -1,50 +1,85 @@
-# redis-cache-manager
-cache manager for any cache data base with redis client 
 
-# How use this
+# RedisCacheManager
 
-### install package from nuget
-``` cli
-dotnet add package RedisCacheManager --version 1.6.0
+A flexible cache manager for any cache database using a Redis client.
+
+---
+
+## How to Use
+
+### Install via NuGet
+
+```bash
+dotnet add package RedisCacheManager --version 1.6.1
+````
+
+
+### Register RedisCacheManager in Your Services
+
+```csharp
+using RedisCacheManager.Configuration;
+
+...
+
+builder.Services.AddRedisCacheManager(() => new CacheConfigs("127.0.0.1:6379", 1));
 ```
 
-### Add Redis Cache manager to your services 
+---
 
-``` Csharp
-  using RedisCacheManager.Configuration;
+### Using Cache Abstractions in Your Code
 
-  ....
-
-  builder.Services.AddRedisCacheManager(()=> new CacheConfigs("127.0.0.1:6379",1));
-```
-
-#### Use Abstractions in your code 
-
-``` Csharp
-
-public class Product(ICache cache,IProductRepository productRepository) : IProduct
+```csharp
+public class ProductService : IProductService
 {
+    private readonly ICache _cache;
+    private readonly IProductRepository _productRepository;
+
+    public ProductService(ICache cache, IProductRepository productRepository)
+    {
+        _cache = cache;
+        _productRepository = productRepository;
+    }
+
     public async Task<Product> FindByIdAsync(Guid id)
     {
         string key = $"find-product-{id}";
-        var product = await cache.GetOrSetItemAsync(id,async()=> await productRepository.FindById(id));
+        var product = await _cache.GetOrSetItemAsync(key, async () => await _productRepository.FindById(id));
         return product;
     }
 
-    publick async Task<Product?> FindByIdFromCache(Guid id)
+    public async Task<Product?> FindByIdFromCacheAsync(Guid id)
     {
         string key = $"find-product-{id}";
-        var product = await cache.GetItemAsync<Product>(key);
+        var product = await _cache.GetItemAsync<Product>(key);
         return product;
     }
 
-    publick async Task<Product?> FindByIdAndCache(Guid id)
+    public async Task<Product?> FindByIdAndCacheAsync(Guid id)
     {
         string key = $"find-product-{id}";
-        var product = await cache.GetItemAsync<Product>(key);
-        product ??= await productRepository.FindById(id);
-        return cache.SetItemIfAsync(product is not null,key,product,new CacheDuration(Minutes:2));
+        var product = await _cache.GetItemAsync<Product>(key);
+        if (product == null)
+        {
+            product = await _productRepository.FindById(id);
+            if (product != null)
+            {
+                await _cache.SetItemIfAsync(true, key, product, new CacheDuration(minutes: 2));
+            }
+        }
+        return product;
     }
 }
-
 ```
+
+---
+
+## Cache Abstractions
+
+The library provides two main abstractions to manage caching:
+
+* `IJsonCache` — Cache management using JSON serialization (recommended for ease of use with models).
+* `IProtoCache` — Cache management using Protobuf serialization (recommended for minimizing cache size and improving performance).
+
+Use `JsonCache` if you want simple serialization of your models.
+Use `IProtoCache` if you want to optimize cache size and performance with Protobuf.
+
