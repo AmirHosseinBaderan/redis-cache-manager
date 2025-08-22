@@ -1,7 +1,7 @@
-﻿using RedisCacheManager.Configuration;
+﻿using CacheManager.Configuration;
 using StackExchange.Redis;
 
-namespace RedisCacheManager.Core;
+namespace CacheManager.Core;
 
 public class CacheDb(ICacheCore core) : ICacheDb
 {

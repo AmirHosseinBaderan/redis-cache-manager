@@ -1,8 +1,11 @@
 ﻿
 
+using CacheManager.Abstraction;
+using CacheManager.Configuration;
+using CacheManager.Core;
 using Microsoft.Extensions.Logging;
 
-namespace RedisCacheManager.Implementation;
+namespace CacheManager.Implementation;
 
 internal class CacheBase(ICacheDb cacheDb, ILogger<CacheBase> logger) : ICacheBase
 {

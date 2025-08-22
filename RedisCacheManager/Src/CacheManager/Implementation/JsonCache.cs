@@ -1,4 +1,7 @@
-﻿namespace RedisCacheManager.Implementation;
+﻿using CacheManager.Abstraction;
+using CacheManager.Configuration;
+
+namespace CacheManager.Implementation;
 
 internal class JsonCache(ICacheBase cacheBase) : IJsonCache
 {

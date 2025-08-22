@@ -1,6 +1,6 @@
 ﻿using StackExchange.Redis;
 
-namespace RedisCacheManager.Core;
+namespace CacheManager.Core;
 
 public interface ICacheDb : IAsyncDisposable
 {

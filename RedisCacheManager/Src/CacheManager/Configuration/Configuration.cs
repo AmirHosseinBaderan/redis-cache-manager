@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using RedisCacheManager.Implementation;
+﻿using CacheManager.Abstraction;
+using CacheManager.Core;
+using CacheManager.Implementation;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace RedisCacheManager.Configuration;
+namespace CacheManager.Configuration;
 
 public static class Configuration
 {

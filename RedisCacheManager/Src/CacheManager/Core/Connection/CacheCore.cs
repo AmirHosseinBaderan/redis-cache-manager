@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CacheManager.Configuration;
+using Microsoft.Extensions.Logging;
 
-namespace RedisCacheManager.Core;
+namespace CacheManager.Core;
 
 public class CacheCore(ILogger<CacheCore> logger) : ICacheCore
 {

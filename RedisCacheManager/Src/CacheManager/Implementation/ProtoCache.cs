@@ -1,4 +1,7 @@
-﻿namespace RedisCacheManager.Implementation;
+﻿using CacheManager.Abstraction;
+using CacheManager.Configuration;
+
+namespace CacheManager.Implementation;
 
 public class ProtoCache(ICacheBase cacheBase) : IProtoCache
 {

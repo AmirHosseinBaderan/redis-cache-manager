@@ -1,6 +1,6 @@
 ﻿using Google.Protobuf;
 
-namespace RedisCacheManager;
+namespace CacheManager;
 
 public static class RedisPortobuf
 {

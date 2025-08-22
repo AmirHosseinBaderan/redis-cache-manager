@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{580553CF-3CC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{2B9AE7FB-45E1-41ED-9C9E-AFF927BD2221}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedisCacheManager", "Src\RedisCacheManager\RedisCacheManager.csproj", "{52CC5F53-FC4F-4FC5-ABB5-AA743DB02622}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CacheManager", "Src\CacheManager\CacheManager.csproj", "{52CC5F53-FC4F-4FC5-ABB5-AA743DB02622}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedisCacheManager.Test", "Test\RedisCacheManager.Test\RedisCacheManager.Test.csproj", "{9DE61199-DAB0-47E3-9224-7CDF20D74BD5}"
 EndProject

@@ -1,4 +1,6 @@
-﻿namespace RedisCacheManager.Abstraction;
+﻿using CacheManager.Configuration;
+
+namespace CacheManager.Abstraction;
 
 public interface IProtoCache
 {

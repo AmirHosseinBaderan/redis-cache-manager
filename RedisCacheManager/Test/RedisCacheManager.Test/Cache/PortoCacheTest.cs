@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using RedisCacheManager.Abstraction;
-using RedisCacheManager.Configuration;
+using CacheManager.Abstraction;
+using CacheManager.Configuration;
 
 namespace RedisCacheManager.Test.Cache;
 

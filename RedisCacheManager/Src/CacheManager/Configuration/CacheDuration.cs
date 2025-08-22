@@ -1,4 +1,4 @@
-﻿namespace RedisCacheManager.Configuration;
+﻿namespace CacheManager.Configuration;
 
 public record CacheDuration(int Milliseconds = 0, int Second = 0, int Minute = 0, int Hour = 0, int Day = 0)
 {

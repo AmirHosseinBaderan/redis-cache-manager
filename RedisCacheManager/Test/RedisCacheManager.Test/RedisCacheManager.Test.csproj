@@ -27,7 +27,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Src\RedisCacheManager\RedisCacheManager.csproj" />
+		<ProjectReference Include="..\..\Src\CacheManager\CacheManager.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
